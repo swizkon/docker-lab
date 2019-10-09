@@ -1,17 +1,4 @@
-﻿//using System;
-
-//namespace sender
-//{
-//    class Program
-//    {
-//        static void Main(string[] args)
-//        {
-//            Console.WriteLine("Hello World!");
-//        }
-//    }
-//}
-
-using RabbitMQ.Client;
+﻿using RabbitMQ.Client;
 using System;
 using System.Text;
 using System.Threading.Tasks;
@@ -49,7 +36,8 @@ namespace DockerRabbitMQ.sender
 
                         while (true)
                         {
-                            var body = $"A nice random message: {DateTime.Now.Ticks}";
+                            Console.WriteLine("Enter message and press enter");
+                            var body = Console.ReadLine();
                             channel.BasicPublish(
                                 exchange: string.Empty,
                                 routingKey: queueName,
@@ -57,7 +45,7 @@ namespace DockerRabbitMQ.sender
                                 body: Encoding.UTF8.GetBytes(body));
 
                             Console.WriteLine("Message sent: " + body);
-                            await Task.Delay(500);
+                            await Task.Delay(100);
                         }
                     }
                 }
