@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.28307.852
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "sender", "sender\sender.csproj", "{3B06DAE1-81F6-4777-9748-20776B4F2101}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DockerRabbitMQ.Subscriber", "..\DockerRabbitMQ.Subscriber\DockerRabbitMQ.Subscriber.csproj", "{1EAFB09B-D2FB-4B50-9DF9-E4647E326A50}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DockerRabbitMQ.Subscriber", "DockerRabbitMQ.Subscriber\DockerRabbitMQ.Subscriber.csproj", "{1EAFB09B-D2FB-4B50-9DF9-E4647E326A50}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
