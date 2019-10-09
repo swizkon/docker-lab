@@ -16,7 +16,7 @@ using System;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace sender
+namespace DockerRabbitMQ.sender
 {
     internal static class Program
     {
@@ -49,14 +49,14 @@ namespace sender
 
                         while (true)
                         {
-                            string body = $"A nice random message: {DateTime.Now.Ticks}";
+                            var body = $"A nice random message: {DateTime.Now.Ticks}";
                             channel.BasicPublish(
                                 exchange: string.Empty,
                                 routingKey: queueName,
                                 basicProperties: null,
                                 body: Encoding.UTF8.GetBytes(body));
 
-                            Console.WriteLine("Message sent");
+                            Console.WriteLine("Message sent: " + body);
                             await Task.Delay(500);
                         }
                     }
