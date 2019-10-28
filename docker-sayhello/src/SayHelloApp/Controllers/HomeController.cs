@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -48,9 +46,7 @@ namespace SayHelloApp.Controllers
 
         public IActionResult ServiceDetails()
         {
-            var myServiceDetails = GetServiceDetails(); 
-            // _configuration.GetValue<string>("SayHello:ServiceName");
-
+            var myServiceDetails = GetServiceDetails();
             return View(model: myServiceDetails);
         }
 
@@ -60,7 +56,9 @@ namespace SayHelloApp.Controllers
             return new ServiceDetailsModel
             {
                 ServiceName = _configuration.GetValue<string>("SayHello:ServiceName"),
-                IncommingHeaders = _httpContextAccessor.HttpContext?.Request?.Headers?.Values.ToString()
+                Host = _httpContextAccessor.HttpContext.Request.Host.Host,
+                Port = _httpContextAccessor.HttpContext.Request.Host.Port?.ToString(),
+                IncommingHeaders = _httpContextAccessor.HttpContext?.Request?.Headers?.ToString()
             };
         }
 
@@ -69,7 +67,7 @@ namespace SayHelloApp.Controllers
             // Return some thing like...
             // Hi, my name is {Config} and Im on host + port etc..
 
-            return await Task.FromResult("Hi! My name is {} and Im running at end point {host}:{port}");
+            return await Task.FromResult("Hi! My name is {ServiceName} and Im running at end point {host}:{port}");
         }
     }
 }
