@@ -41,7 +41,9 @@ namespace SayHelloApp.Controllers
             //// Format an output to the view
             //ViewBag.TeamData = string.Join(" ", teams.Select(x => x.Name + " " + x.Department));
             
-            return View();
+            // return View();
+            var myServiceDetails = GetServiceDetails();
+            return View(model: myServiceDetails);
         }
 
         public IActionResult ServiceDetails()
