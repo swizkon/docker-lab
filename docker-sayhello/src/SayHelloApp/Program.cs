@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -9,6 +10,8 @@ namespace SayHelloApp
 {
     public class Program
     {
+        private const string UrlFlag = "--useurl=";
+
         public static void Main(string[] args)
         {
             CreateWebHostBuilder(args).Build().Run();
@@ -16,20 +19,21 @@ namespace SayHelloApp
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args)
         {
-            var useUrl = args.Where(x => x.StartsWith("--useurl="))
-                             .Select(x => x.Replace("--useurl=", ""))
-                             .FirstOrDefault();
- 
-            var webHostBuilder = WebHost.CreateDefaultBuilder(args)
-                                        .ConfigureAppConfiguration(builder => builder.AddCommandLine(args))
-                                        .UseStartup<Startup>()
-                                        .ConfigureLogging(logging =>
-                                        {
-                                            logging.ClearProviders();
-                                            logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
-                                        })
-                                        .UseNLog();
+            var webHostBuilder
+                = WebHost.CreateDefaultBuilder(args)
+                         .ConfigureAppConfiguration(builder => builder.AddCommandLine(args))
+                         .UseStartup<Startup>()
+                         .ConfigureLogging(logging =>
+                         {
+                             logging.ClearProviders();
+                             logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
+                         })
+                         .UseNLog(NLogAspNetCoreOptions.Default);
 
+            var useUrl
+                = args.Where(x => x.StartsWith(UrlFlag, StringComparison.InvariantCultureIgnoreCase))
+                      .Select(x => x.Replace(UrlFlag, "", StringComparison.InvariantCultureIgnoreCase))
+                      .FirstOrDefault();
             if (!string.IsNullOrWhiteSpace(useUrl))
             {
                 webHostBuilder = webHostBuilder.UseUrls(useUrl);
