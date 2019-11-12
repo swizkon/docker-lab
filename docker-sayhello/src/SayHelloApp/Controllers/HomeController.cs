@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -46,12 +48,17 @@ namespace SayHelloApp.Controllers
             return View(model: myServiceDetails);
         }
 
+        public IActionResult Siblings()
+        {
+            var myServiceDetails = GetServiceDetails();
+            return View(myServiceDetails);
+        }
+
         public IActionResult ServiceDetails()
         {
             var myServiceDetails = GetServiceDetails();
-            return View(model: myServiceDetails);
+            return Json(myServiceDetails);
         }
-
 
         private ServiceDetailsModel GetServiceDetails()
         {
@@ -60,7 +67,8 @@ namespace SayHelloApp.Controllers
                 ServiceName = _configuration.GetValue<string>("SayHello:ServiceName"),
                 Host = _httpContextAccessor.HttpContext.Request.Host.Host,
                 Port = _httpContextAccessor.HttpContext.Request.Host.Port?.ToString(),
-                IncommingHeaders = _httpContextAccessor.HttpContext?.Request?.Headers?.ToString()
+                IncomingHeaders = _httpContextAccessor.HttpContext?.Request?
+                    .Headers.Select(k => new KeyValuePair<string, string>(k.Key, string.Join(", ", k.Value.ToArray()))).ToList()
             };
         }
 

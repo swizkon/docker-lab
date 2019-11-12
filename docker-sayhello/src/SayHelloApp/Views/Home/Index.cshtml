@@ -3,8 +3,17 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <h2 class="display-4">@ViewBag.ChallengeData</h2>
-    <h3 class="display-4">@ViewBag.TeamData</h3>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-3"><small>ServiceName<br/></small> @Model.ServiceName</h1>
+    <h3 class="display-4"><small>Im running at<br /></small> @Model.Host:@Model.Port</h3>
+    <p>
+        <b>With headers:</b>
+        
+        @foreach (var h in @Model.IncomingHeaders)
+        {
+            <div>
+
+                <b>@h.Key:</b> @h.Value
+            </div>
+        }
+</p>
 </div>

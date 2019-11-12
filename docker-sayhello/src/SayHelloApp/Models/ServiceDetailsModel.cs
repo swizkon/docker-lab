@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace SayHelloApp.Models
 {
     public class ServiceDetailsModel
@@ -8,6 +10,6 @@ namespace SayHelloApp.Models
         
         public string Port { get; set; }
 
-        public string IncommingHeaders { get; set; }
+        public List<KeyValuePair<string, string>> IncomingHeaders { get; set; }
     }
 }
