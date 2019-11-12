@@ -14,7 +14,6 @@ namespace SayHelloApp
             CreateWebHostBuilder(args).Build().Run();
         }
 
-
         public static IWebHostBuilder CreateWebHostBuilder(string[] args)
         {
             var useUrl = args.Where(x => x.StartsWith("--useurl="))

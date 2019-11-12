@@ -66,9 +66,6 @@ namespace SayHelloApp.Controllers
 
         private async Task<string> GetAnotherServiceDetails(string service)
         {
-            // Return some thing like...
-            // Hi, my name is {Config} and Im on host + port etc..
-
             return await Task.FromResult("Hi! My name is {ServiceName} and Im running at end point {host}:{port}");
         }
     }
