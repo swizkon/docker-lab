@@ -50,6 +50,7 @@ namespace SayHelloApp.Controllers
 
         public IActionResult Siblings()
         {
+            ViewBag.Siblings = _configuration.GetValue<string>("SayHello:Siblings");
             var myServiceDetails = GetServiceDetails();
             return View(myServiceDetails);
         }
