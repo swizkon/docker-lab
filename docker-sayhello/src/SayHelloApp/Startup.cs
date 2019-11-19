@@ -36,6 +36,8 @@ namespace SayHelloApp
             });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            
+            services.AddOpenIdConnectAuthentication(Environment, Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -53,7 +55,7 @@ namespace SayHelloApp
             //    app.UseHsts();
             //}
 
-            // app.UseHttpsRedirection();
+            app.UseHttpsRedirection();
 
             app.UseAuthentication();
             

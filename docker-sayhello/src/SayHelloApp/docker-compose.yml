@@ -5,7 +5,7 @@ services:
     ports:
       - "5061:80"
     environment:
-      - SayHello:ServiceName=subservice1
+      - SayHello:ServiceName=The first sub service
       
   subservice2:
     image: sayhelloapp

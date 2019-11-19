@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using SayHelloApp.Models;
 
 namespace SayHelloApp.Controllers
@@ -27,6 +27,7 @@ namespace SayHelloApp.Controllers
             _logger = logger;
         }
 
+        [Authorize]
         public IActionResult Index()
         {
             _logger.LogInformation("Index page says hello at {Timestamp}", DateTime.Now);
@@ -35,6 +36,7 @@ namespace SayHelloApp.Controllers
             return View(model: myServiceDetails);
         }
 
+        [Authorize]
         public async Task<IActionResult> Siblings()
         {
             var siblings = _configuration.GetValue<string>("SayHello:Siblings");
