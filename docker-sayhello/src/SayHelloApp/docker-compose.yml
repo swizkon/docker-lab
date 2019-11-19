@@ -1,0 +1,23 @@
+version: '3'
+services:
+  subservice1:
+    image: sayhelloapp
+    ports:
+      - "5061:80"
+    environment:
+      - SayHello:ServiceName=subservice1
+      
+  subservice2:
+    image: sayhelloapp
+    ports:
+      - "5062:80"
+    environment:
+      - SayHello:ServiceName=subservice2
+      
+  pubweb:
+    image: sayhelloapp
+    ports:
+      - "5601:80"
+    environment:
+      - SayHello:ServiceName=TheName
+      - SayHello:Siblings=http://subservice1 http://subservice2
