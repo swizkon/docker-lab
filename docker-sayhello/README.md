@@ -1,5 +1,6 @@
 # Say Hello
 
+docker run -d -p 8090:80 -e "SayHello:ServiceName=SlickRIck" --rm --name myapp sayhelloapp
 
 Run with 3 consoles
 
