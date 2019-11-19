@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using SayHelloApp.Models;
 
 namespace SayHelloApp.Controllers
@@ -15,6 +17,8 @@ namespace SayHelloApp.Controllers
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IConfiguration _configuration;
         private readonly ILogger<HomeController> _logger;
+
+        private static readonly HttpClient httpClient = new HttpClient();
 
         public HomeController(IHttpContextAccessor httpContextAccessor, IConfiguration configuration, ILogger<HomeController> logger)
         {
@@ -26,33 +30,21 @@ namespace SayHelloApp.Controllers
         public IActionResult Index()
         {
             _logger.LogInformation("Index page says hello at {Timestamp}", DateTime.Now);
-
-            //// Get minimal challenge data
-            //var challenges = await _restApiClient.CallAsync(new Challenges.GetChallengesRequest(new Challenges.ChallengesResourceIdentifier()));
-
-            //// Parallel get of details for each challenge
-            //var challengeDetailsTasks = challenges.Select(c => Task.Run(async () => await GetChallengeDetails(c.Id))).ToArray();
-
-            //// Wait for all to complete
-            //var challengeDetails = await Task.WhenAll(challengeDetailsTasks);
-            //// Format an output to the view
-            //ViewBag.ChallengeData = string.Join(" ", challengeDetails.Select(x => x.Title + " " + x.Description + " from " + x.StartDate + " to " + x.EndDate));
-
-            //// Get all teams
-            //var teams = await _restApiClient.CallAsync(new Teams.GetTeamsRequest());
-            //// Format an output to the view
-            //ViewBag.TeamData = string.Join(" ", teams.Select(x => x.Name + " " + x.Department));
             
-            // return View();
             var myServiceDetails = GetServiceDetails();
             return View(model: myServiceDetails);
         }
 
-        public IActionResult Siblings()
+        public async Task<IActionResult> Siblings()
         {
-            ViewBag.Siblings = _configuration.GetValue<string>("SayHello:Siblings");
-            var myServiceDetails = GetServiceDetails();
-            return View(myServiceDetails);
+            var siblings = _configuration.GetValue<string>("SayHello:Siblings");
+            ViewBag.Siblings = siblings;
+            
+            var siblingDetailsTasks = GetSiblingDetails(siblings.Split(' '), "The sender");
+
+            var siblingDetails = await Task.WhenAll(siblingDetailsTasks);
+
+            return View(siblingDetails);
         }
 
         public IActionResult ServiceDetails()
@@ -73,9 +65,24 @@ namespace SayHelloApp.Controllers
             };
         }
 
-        private async Task<string> GetAnotherServiceDetails(string service)
+        private Task<string>[] GetSiblingDetails(string[] services, string sender)
         {
-            return await Task.FromResult("Hi! My name is {ServiceName} and Im running at end point {host}:{port}");
+            return services.Select(service => Task.Run(async () => await GetSiblingServiceDetails(service, sender))).ToArray();
+        }
+
+        private async Task<string> GetSiblingServiceDetails(string service, string sender)
+        {
+            try
+            {
+                var data = await httpClient.GetStringAsync(service + "/home/ServiceDetails");
+                return data;
+                //var model = JsonConvert.DeserializeObject<ServiceDetailsModel>(data);
+                //return "Name: " + model.ServiceName;
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
         }
     }
 }

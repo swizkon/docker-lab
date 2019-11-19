@@ -1,8 +1,17 @@
 ﻿@{
     ViewData["Title"] = "Service details";
 }
-<h1>@ViewData["Title"]</h1>
 
-<p><b>My name is:</b> @Model.ServiceName</p>
-<p><b>Im running at:</b> @Model.Host:@Model.Port</p>
-<p><b>With headers:</b> @Model.IncomingHeaders</p>
+<div class="text-center">
+    <h1 class="display-3">@ViewData["Title"]</h1>
+    <h3 class="display-4">@ViewBag.Siblings</h3>
+    <p>
+        @foreach (var siblingInfo in @Model)
+        {
+            <div>
+                <hr/>
+                @siblingInfo
+            </div>
+        }
+    </p>
+</div>

@@ -7,11 +7,9 @@
     <h3 class="display-4"><small>Im running at<br /></small> @Model.Host:@Model.Port</h3>
     <p>
         <b>With headers:</b>
-        
         @foreach (var h in @Model.IncomingHeaders)
         {
             <div>
-
                 <b>@h.Key:</b> @h.Value
             </div>
         }
