@@ -29,9 +29,13 @@ namespace SayHelloApp
 
             //        options.ResponseMode = "form_post";
             //        options.ResponseType = "code";
+                    // options.ResponseType = "token id_token";
 
             //        options.GetClaimsFromUserInfoEndpoint = openIdConnectSettings.GetClaimsFromUserInfoEndpoint;
 
+                    //options.ClientId = "implicit";
+
+                    // options.GetClaimsFromUserInfoEndpoint = openIdConnectSettings.GetClaimsFromUserInfoEndpoint;
             //        foreach (var scope in openIdConnectSettings.Scopes.Split(' '))
             //        {
             //            options.Scope.Add(scope);
@@ -50,16 +54,12 @@ namespace SayHelloApp
                 {
                     options.Authority = openIdConnectSettings.Authority;
                     options.ClientId = openIdConnectSettings.ClientId;
-                    //options.ClientId = "implicit";
 
                     options.RequireHttpsMetadata = false;
-
-                    // options.GetClaimsFromUserInfoEndpoint = openIdConnectSettings.GetClaimsFromUserInfoEndpoint;
 
                     options.Scope.Add("profile");
                     options.Scope.Add("email");
 
-                    // options.ResponseType = "token id_token";
                     options.SaveTokens = true;
                 });
         }
