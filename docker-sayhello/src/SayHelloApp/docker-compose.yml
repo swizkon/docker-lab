@@ -21,3 +21,9 @@ services:
     environment:
       - SayHello:ServiceName=TheName
       - SayHello:Siblings=http://subservice1 http://subservice2
+
+  mailserver:
+    image: mailhog/mailhog
+    ports: 
+     - "8025:8025"
+     - "1025:1025"
