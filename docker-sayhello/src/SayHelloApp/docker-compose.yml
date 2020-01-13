@@ -1,21 +1,24 @@
 version: '3'
 services:
   subservice1:
-    image: sayhelloapp
+    image: swizkon/sayhello
     ports:
       - "5061:80"
     environment:
       - SayHello:ServiceName=The first sub service
       
   subservice2:
-    image: sayhelloapp
+    image: swizkon/sayhello
     ports:
       - "5062:80"
     environment:
-      - SayHello:ServiceName=subservice2
+      - SayHello:ServiceName=The second sub service
       
   pubweb:
-    image: sayhelloapp
+    image: swizkon/sayhello
+    build:
+      dockerfile: Dockerfile
+      context: .
     ports:
       - "5601:80"
     environment:
