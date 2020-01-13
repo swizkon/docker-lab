@@ -1,20 +1,27 @@
-﻿using System.Net.Mail;
+﻿using System;
+using System.Globalization;
+using System.Net.Mail;
+using System.Text;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Distributed;
 
 namespace SayHelloApp.Controllers
 {
     public class MailController : Controller
     {
+        private readonly IDistributedCache _distributedCache;
+
+        public MailController(IDistributedCache distributedCache)
+        {
+            _distributedCache = distributedCache;
+        }
+
         // GET: Mail
         public ActionResult Index()
         {
-            return View();
-        }
+            _distributedCache.Set("MailController", Encoding.UTF8.GetBytes(DateTime.Now.ToString(CultureInfo.InvariantCulture)));
 
-        // GET: Mail/Create
-        public ActionResult Create()
-        {
             return View();
         }
 
@@ -40,7 +47,7 @@ namespace SayHelloApp.Controllers
             }
             catch
             {
-                return View();
+                return RedirectToAction(nameof(Index));
             }
         }
     }

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Caching.Distributed;
 
 namespace SayHelloApp
 {
@@ -35,6 +36,12 @@ namespace SayHelloApp
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            //services.AddStackExchangeRedisCache(options =>
+            //{
+            //    options.Configuration = "redis";
+            //    options.InstanceName = "SampleInstance";
+            //});
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             
             services.AddOpenIdConnectAuthentication(Environment, Configuration);
@@ -54,7 +61,7 @@ namespace SayHelloApp
             //    app.UseExceptionHandler("/Home/Error");
             //    app.UseHsts();
             //}
-
+            
             app.UseHttpsRedirection();
 
             app.UseAuthentication();
