@@ -27,11 +27,27 @@ services:
 
   mailserver:
     image: mailhog/mailhog
-    ports: 
-     - "8025:8025"
-     - "1025:1025"
+    ports:
+      - "8025:8025"
+      - "1025:1025"
+
+  # sqlserver:
+  #   image: mcr.microsoft.com/mssql/server:2019-GA-ubuntu-16.04
+  #   ports: 
+  #     - "1433:1433"
+  #   environment: 
+  #     - "ACCEPT_EULA=Y"
+  #     - "SA_PASSWORD=MyS3curep@ssW0rd"
 
   redis:
     image: redis
     ports:
-     - "6379:6379"
+      - "6379:6379"
+
+  # docker run -d -t -p 10000:10000 -p 10001:10001 -p 10002:10002 -v /path/to/folder:/opt/azurite/folder arafato/azurite
+  azurite:
+    image: arafato/azurite
+    ports: 
+      - "10000:10000"
+      - "10001:10001"
+      - "10002:10002"
