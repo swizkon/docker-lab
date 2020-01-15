@@ -8,6 +8,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Blob;
+
 using SayHelloApp.Models;
 
 namespace SayHelloApp.Controllers
@@ -16,21 +20,30 @@ namespace SayHelloApp.Controllers
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IConfiguration _configuration;
+        private readonly CloudBlobClient _cloudBlobClient;
         private readonly ILogger<HomeController> _logger;
 
         private static readonly HttpClient httpClient = new HttpClient();
 
-        public HomeController(IHttpContextAccessor httpContextAccessor, IConfiguration configuration, ILogger<HomeController> logger)
+        public HomeController(IHttpContextAccessor httpContextAccessor, IConfiguration configuration, CloudBlobClient cloudBlobClient, ILogger<HomeController> logger)
         {
             _httpContextAccessor = httpContextAccessor;
             _configuration = configuration;
+            _cloudBlobClient = cloudBlobClient;
             _logger = logger;
         }
 
         [Authorize]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             _logger.LogInformation("Index page says hello at {Timestamp}", DateTime.Now);
+            
+            var container = _cloudBlobClient.GetContainerReference("mycontainer");
+            await container.CreateIfNotExistsAsync();
+
+            var blob = container.GetBlockBlobReference("myblob");
+            
+            await blob.UploadTextAsync("Test it at " + DateTime.Now.ToString());
             
             var myServiceDetails = GetServiceDetails();
             return View(model: myServiceDetails);
@@ -46,6 +59,13 @@ namespace SayHelloApp.Controllers
 
             var siblingDetails = await Task.WhenAll(siblingDetailsTasks);
 
+            var container = _cloudBlobClient.GetContainerReference("mycontainer");
+            var blob = container.GetBlockBlobReference("myblob");
+            
+            var txt = await blob.DownloadTextAsync();
+
+            siblingDetails = siblingDetails.Append(txt).ToArray();
+            
             return View(siblingDetails);
         }
 

@@ -47,6 +47,8 @@ services:
   # docker run -d -t -p 10000:10000 -p 10001:10001 -p 10002:10002 -v /path/to/folder:/opt/azurite/folder arafato/azurite
   azurite:
     image: arafato/azurite
+    volumes: 
+      - "~/Documents/AzuriteData:/data"
     ports: 
       - "10000:10000"
       - "10001:10001"
