@@ -41,7 +41,7 @@ namespace SayHelloApp.Controllers
             var container = _cloudBlobClient.GetContainerReference("mycontainer");
             await container.CreateIfNotExistsAsync();
 
-            var blob = container.GetBlockBlobReference("myblob");
+            var blob = container.GetBlockBlobReference("myblob-" + DateTime.Now.Minute);
             
             await blob.UploadTextAsync("Test it at " + DateTime.Now.ToString());
             
@@ -64,7 +64,12 @@ namespace SayHelloApp.Controllers
             
             var txt = await blob.DownloadTextAsync();
 
-            siblingDetails = siblingDetails.Append(txt).ToArray();
+            BlobContinuationToken token = null;
+            var data = container.ListBlobsSegmentedAsync(token);
+
+            var docs = data.Result.Results.OfType<CloudBlockBlob>().Select(x => x.Name);
+
+            siblingDetails = siblingDetails.Append(txt).Concat(docs).ToArray();
             
             return View(siblingDetails);
         }
