@@ -43,7 +43,11 @@ namespace SayHelloApp
             //    options.InstanceName = "SampleInstance";
             //});
 
-            var account = CloudStorageAccount.Parse(Configuration["StorageConnectionString"]);
+            var connectionString = Configuration["StorageConnectionString"];
+
+            System.Console.WriteLine(connectionString);
+
+            var account = CloudStorageAccount.Parse(connectionString);
             var blobClient = account.CreateCloudBlobClient();
             services.AddSingleton(blobClient.GetType(), blobClient);
 
