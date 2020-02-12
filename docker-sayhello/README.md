@@ -24,3 +24,7 @@ dotnet run --useurl=http://localhost:5000 "SayHello:ServiceName=MasterService" "
 ```
  
 Navigate to http://localhost:5000 and http://localhost:5000/home/siblings to see the outcome of poor discovery
+
+https://www.hanselman.com/blog/BuildingRunningAndTestingNETCoreAndASPNETCore21InDockerOnARaspberryPiARM32.aspx
+
+https://www.hanselman.com/blog/HowToBuildAKubernetesClusterWithARMRaspberryPiThenRunNETCoreOnOpenFaas.aspx
