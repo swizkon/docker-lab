@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Caching.Distributed;
+using StackExchange.Redis;
 
 namespace SayHelloApp
 {
@@ -36,11 +37,15 @@ namespace SayHelloApp
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            //services.AddStackExchangeRedisCache(options =>
-            //{
-            //    options.Configuration = "redis";
-            //    options.InstanceName = "SampleInstance";
-            //});
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = "localhost";
+                //options.ConfigurationOptions = new ConfigurationOptions()
+                //{
+
+                //};
+                options.InstanceName = "SampleInstance";
+            });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             

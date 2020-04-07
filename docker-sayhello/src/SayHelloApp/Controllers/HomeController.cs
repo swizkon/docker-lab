@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using SayHelloApp.Models;
@@ -20,17 +23,25 @@ namespace SayHelloApp.Controllers
 
         private static readonly HttpClient httpClient = new HttpClient();
 
-        public HomeController(IHttpContextAccessor httpContextAccessor, IConfiguration configuration, ILogger<HomeController> logger)
+        private readonly IDistributedCache _distributedCache;
+
+        public HomeController(IHttpContextAccessor httpContextAccessor, IConfiguration configuration, IDistributedCache distributedCache, ILogger<HomeController> logger)
         {
             _httpContextAccessor = httpContextAccessor;
             _configuration = configuration;
+            _distributedCache = distributedCache;
             _logger = logger;
         }
 
         [Authorize]
         public IActionResult Index()
         {
+            var cacheKey = "MailController";
+            _distributedCache.Set(cacheKey, Encoding.UTF8.GetBytes(DateTime.Now.ToString(CultureInfo.InvariantCulture)));
+
             _logger.LogInformation("Index page says hello at {Timestamp}", DateTime.Now);
+
+            var d = _distributedCache.Get(cacheKey);
             
             var myServiceDetails = GetServiceDetails();
             return View(model: myServiceDetails);
