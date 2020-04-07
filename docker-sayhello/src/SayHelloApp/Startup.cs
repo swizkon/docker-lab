@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.WindowsAzure.Storage;
 using StackExchange.Redis;
 
 namespace SayHelloApp
@@ -46,6 +47,14 @@ namespace SayHelloApp
                 //};
                 options.InstanceName = "SampleInstance";
             });
+
+            var connectionString = Configuration["StorageConnectionString"];
+
+            System.Console.WriteLine(connectionString);
+
+            var account = CloudStorageAccount.Parse(connectionString);
+            var blobClient = account.CreateCloudBlobClient();
+            services.AddSingleton(blobClient.GetType(), blobClient);
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             

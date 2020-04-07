@@ -11,6 +11,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Blob;
+
 using SayHelloApp.Models;
 
 namespace SayHelloApp.Controllers
@@ -19,27 +23,37 @@ namespace SayHelloApp.Controllers
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IConfiguration _configuration;
+        private readonly CloudBlobClient _cloudBlobClient;
         private readonly ILogger<HomeController> _logger;
 
         private static readonly HttpClient httpClient = new HttpClient();
 
         private readonly IDistributedCache _distributedCache;
 
-        public HomeController(IHttpContextAccessor httpContextAccessor, IConfiguration configuration, IDistributedCache distributedCache, ILogger<HomeController> logger)
+        public HomeController(IHttpContextAccessor httpContextAccessor, IConfiguration configuration, CloudBlobClient cloudBlobClient, IDistributedCache distributedCache, ILogger<HomeController> logger)
         {
             _httpContextAccessor = httpContextAccessor;
             _configuration = configuration;
             _distributedCache = distributedCache;
+            _cloudBlobClient = cloudBlobClient;
             _logger = logger;
         }
 
         [Authorize]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             var cacheKey = "MailController";
             _distributedCache.Set(cacheKey, Encoding.UTF8.GetBytes(DateTime.Now.ToString(CultureInfo.InvariantCulture)));
 
             _logger.LogInformation("Index page says hello at {Timestamp}", DateTime.Now);
+            
+            var container = _cloudBlobClient.GetContainerReference("mycontainer");
+            await container.CreateIfNotExistsAsync();
+
+            var blob = container.GetBlockBlobReference("myblob-" + DateTime.Now.Minute);
+            
+            await blob.UploadTextAsync("Test it at " + DateTime.Now.ToString());
+            
 
             var d = _distributedCache.Get(cacheKey);
             
@@ -57,6 +71,18 @@ namespace SayHelloApp.Controllers
 
             var siblingDetails = await Task.WhenAll(siblingDetailsTasks);
 
+            var container = _cloudBlobClient.GetContainerReference("mycontainer");
+            var blob = container.GetBlockBlobReference("myblob");
+            
+            var txt = await blob.DownloadTextAsync();
+
+            BlobContinuationToken token = null;
+            var data = container.ListBlobsSegmentedAsync(token);
+
+            var docs = data.Result.Results.OfType<CloudBlockBlob>().Select(x => x.Name);
+
+            siblingDetails = siblingDetails.Append(txt).Concat(docs).ToArray();
+            
             return View(siblingDetails);
         }
 
